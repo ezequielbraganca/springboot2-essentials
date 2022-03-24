@@ -3,6 +3,8 @@ package academy.devdojo.springboot2.controller;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import academy.devdojo.springboot2.domain.Anime;
@@ -32,9 +35,15 @@ public class AnimeController {
 	private final AnimeService animeService;
 
 	@GetMapping
-	public ResponseEntity<List<Anime>> list(){
+	public ResponseEntity<List<Anime>> listAll(){
 		log.info(dateUtil.formatLocalDateToDatabaseStyle(LocalDateTime.now()));
 		return ResponseEntity.ok(animeService.listAll());
+	}
+	
+	@GetMapping(path = "/find")
+	public ResponseEntity<List<Anime>> findByName(@RequestParam String name){
+		log.info(dateUtil.formatLocalDateToDatabaseStyle(LocalDateTime.now()));
+		return ResponseEntity.ok(animeService.findByName(name));
 	}
 	
 	@GetMapping(path = "/{id}")
@@ -44,7 +53,7 @@ public class AnimeController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<Anime> save(@RequestBody AnimePostRequestBody animePostRequestBody){
+	public ResponseEntity<Anime> save(@RequestBody @Valid AnimePostRequestBody animePostRequestBody){
 		return new ResponseEntity<>(animeService.save(animePostRequestBody), HttpStatus.CREATED);
 	}
 	
