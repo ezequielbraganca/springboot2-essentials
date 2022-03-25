@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,12 +35,20 @@ public class AnimeController {
 	
 	private final DateUtil dateUtil;
 	private final AnimeService animeService;
+	
+	@GetMapping(path = "/all")
+	public ResponseEntity<List<Anime>> list(){
+		log.info(dateUtil.formatLocalDateToDatabaseStyle(LocalDateTime.now()));
+		return ResponseEntity.ok(animeService.findAll());
+	}
 
 	@GetMapping
-	public ResponseEntity<List<Anime>> listAll(){
+	public ResponseEntity<Page<Anime>> list(Pageable pageable){
 		log.info(dateUtil.formatLocalDateToDatabaseStyle(LocalDateTime.now()));
-		return ResponseEntity.ok(animeService.listAll());
+		return ResponseEntity.ok(animeService.findAll(pageable));
 	}
+	
+	
 	
 	@GetMapping(path = "/find")
 	public ResponseEntity<List<Anime>> findByName(@RequestParam String name){
