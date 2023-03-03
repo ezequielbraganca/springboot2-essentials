@@ -10,7 +10,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -33,8 +32,6 @@ class AnimeControllerTestIT {
 
 	@Autowired
 	private TestRestTemplate testRestTemplate;
-	@LocalServerPort
-	private int port;
 	
 	@Autowired
 	private AnimeRepository animeRepository;
