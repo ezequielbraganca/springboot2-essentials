@@ -8,9 +8,17 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import academy.devdojo.springboot2.service.AnimeUserService;
+import lombok.RequiredArgsConstructor;
+
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@RequiredArgsConstructor
+//@Log4j2
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+	
+	
+	private final AnimeUserService animeUserService;
 
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
@@ -18,6 +26,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		    .csrf().disable()
 			//.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and()
 			.authorizeHttpRequests()
+			.antMatchers("/animes/admin/**").hasRole("ADMIN")
 			.anyRequest()
 			.authenticated()
 			.and()
@@ -29,6 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	public void configure(AuthenticationManagerBuilder auth) throws Exception {
 		PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+//		log.info("password encoder: {}", passwordEncoder.encode("user"));
 		
 		auth.inMemoryAuthentication()
 			.withUser("admin")
@@ -38,5 +48,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.withUser("user")
 			.password(passwordEncoder.encode("user"))
 			.roles("USER");
+		auth.userDetailsService(animeUserService).passwordEncoder(passwordEncoder);
 	}
 }
